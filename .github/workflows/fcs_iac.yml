@@ -10,6 +10,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+    
+      # Scan repository with Crowdstrike FCS IaC scanning tool and upload results to FCS
       - name: Run FCS IaC Scan
         uses: crowdstrike/fcs-action@v1.0.5
         id: fcs
@@ -17,13 +19,16 @@ jobs:
           falcon_client_id: '${{ secrets.FALCON_CLIENT_ID }}'
           falcon_region: '${{ vars.FALCON_CLOUD_REGION }}'
           path: './terraform/azure'
+          fail_on: 'high=3'
           report_formats: 'sarif'
           output_path: './'
           upload_results: false
         env:
           FALCON_CLIENT_SECRET: ${{ secrets.FALCON_CLIENT_SECRET }}
+
+      
       - name: Upload SARIF report to GitHub Code scanning
         uses: github/codeql-action/upload-sarif@v3
         if: steps.fcs.outputs.exit-code != 0
         with:
-          sarif_file: '*-scan-results.sarif'
+          sarif_file: './*-scan-results.sarif'
