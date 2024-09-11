@@ -13,8 +13,8 @@ jobs:
       - name: Run FCS IaC Scan
         uses: crowdstrike/fcs-action@v1.0.5
         with:
-          falcon_client_id: "${{ secrets.FALCON_CLIENT_ID }}"
-          falcon_region: 'us-1'
+          falcon_client_id: '${{ secrets.FALCON_CLIENT_ID }}'
+          falcon_region: '${{ var.FALCON_CLOUD_REGION }}'
           path: './terraform/azure'
           upload_results: false
         env:
